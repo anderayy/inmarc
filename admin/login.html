@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | InMarc Indonesia</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="login-body">
+    <div class="login-card">
+        <div class="sidebar-logo" style="margin-bottom: 30px; color: var(--primary-navy);">
+            InMarc <span>Indonesia</span>
+        </div>
+        <h1>Welcome Back</h1>
+        <p>Please enter your credentials to access the CMS</p>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="admin" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="admin123" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Login to Dashboard</button>
+            <div id="login-error" style="color: var(--danger); margin-top: 20px; display: none;">
+                Invalid username or password.
+            </div>
+        </form>
+    </div>
+
+    <script type="module">
+        import AuthService from '../js/auth.js';
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            if (await AuthService.login(user, pass)) {
+                window.location.href = 'dashboard.html';
+            } else {
+                document.getElementById('login-error').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

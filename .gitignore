@@ -1,0 +1,15 @@
+# IDEs
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# PHP
+composer.lock
+vendor/
+
+# Database
+# database.sql (Keeping it if it's a schema template, but usually good to ignore sensitive data)

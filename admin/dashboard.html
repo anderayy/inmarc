@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | InMarc CMS</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="admin-body">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">InMarc <span>Indonesia</span></div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item active">
+                <i class="fas fa-th-large"></i> Dashboard
+            </a>
+            <a href="portfolio.html" class="nav-item">
+                <i class="fas fa-briefcase"></i> Portfolio
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-avatar" id="user-initials">AD</div>
+            <div class="user-info">
+                <h5 id="user-name">Admin User</h5>
+                <p id="user-email">admin@inmarc.id</p>
+            </div>
+            <button id="logout-btn" title="Logout" style="margin-left: auto; color: rgba(255,255,255,0.5); background: none;">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="content-header">
+            <div>
+                <nav class="breadcrumb">
+                    <span>Admin Dashboard</span>
+                </nav>
+                <h1>System Overview</h1>
+                <p>Track your project performance and recent inquiries.</p>
+            </div>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card-admin">
+                <div>
+                    <h3>Total Projects</h3>
+                    <div class="value" id="total-projects">0</div>
+                </div>
+                <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
+            </div>
+            <div class="stat-card-admin">
+                <div>
+                    <h3>Recent Updates (30d)</h3>
+                    <div class="value" id="recent-updates">0</div>
+                </div>
+                <div class="stat-icon"><i class="fas fa-sync"></i></div>
+            </div>
+        </div>
+
+        <div class="data-card">
+            <div class="table-header">
+                <h2>Recent Contact Inquiries</h2>
+                <a href="#" class="btn btn-primary btn-sm">View All</a>
+            </div>
+            <table id="recent-contacts">
+                <thead>
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Service</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Content via JS -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script type="module">
+        import AuthService from '../js/auth.js';
+        import DataService from '../js/data-service.js';
+
+        AuthService.checkAuth();
+
+        // User Info
+        const user = AuthService.getUser();
+        document.getElementById('user-name').textContent = user.name;
+        document.getElementById('user-email').textContent = user.email;
+        document.getElementById('user-initials').textContent = user.name.split(' ').map(n => n[0]).join('');
+
+        // Stats & Data
+        async function loadDashboard() {
+            const projects = await DataService.getProjects();
+            document.getElementById('total-projects').textContent = projects.length;
+            
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            const recentCount = projects.filter(p => new Date(p.updatedAt) > thirtyDaysAgo).length;
+            document.getElementById('recent-updates').textContent = recentCount;
+
+            // Recent Contacts
+            const contacts = await DataService.getContacts();
+            const sortedContacts = contacts.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt)).slice(0, 5);
+            const contactTbody = document.querySelector('#recent-contacts tbody');
+            
+            if (sortedContacts.length === 0) {
+                contactTbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 40px; color: var(--text-muted);">No inquiries yet.</td></tr>';
+            } else {
+                contactTbody.innerHTML = sortedContacts.map(c => `
+                    <tr>
+                        <td>${c.fullName}</td>
+                        <td>${c.workEmail}</td>
+                        <td>${c.serviceRequired}</td>
+                        <td>${new Date(c.submittedAt).toLocaleDateString()}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        loadDashboard();
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            AuthService.logout();
+        });
+    </script>
+</body>
+</html>
