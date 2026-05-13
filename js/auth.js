@@ -11,12 +11,14 @@ const AuthService = {
             });
             const result = await response.json();
             
-            if (result.success) {
+            if (response.ok && result.success) {
                 sessionStorage.setItem(AUTH_KEY, JSON.stringify(result.user));
                 return true;
             }
+            // If API returns error but response is received, throw to trigger mock
+            throw new Error(result.message || 'Auth failed');
         } catch (error) {
-            console.warn('API not available, attempting local mock login for development...');
+            console.warn('API error or not available, attempting local mock login:', error.message);
             // Local Mock Login Bypass for static environments (Live Server)
             if (username === 'admin' && password === 'admin123') {
                 const mockUser = { 

@@ -16,9 +16,10 @@ const DataService = {
     getProjects: async () => {
         try {
             const response = await fetch(`${API_BASE}/projects.php`);
+            if (!response.ok) throw new Error('API unreachable');
             return await response.json();
         } catch (e) {
-            console.warn('API not available, using local data');
+            console.warn('Using LocalStorage fallback for projects');
             return getLocalProjects();
         }
     },

@@ -38,8 +38,9 @@ html, body {
 }
 
 .logo img {
-    height: 60px;
+    height: 85px;
     width: auto;
+    transition: var(--transition);
 }
 
 .nav-links {
@@ -227,13 +228,14 @@ section {
 .logo-track {
     display: flex;
     width: calc(300px * 18);
-    animation: scroll 30s linear infinite;
+    animation: scroll 30s linear infinite !important;
     gap: 0;
     align-items: center;
+    pointer-events: none; /* Prevents click/touch from interrupting the flow */
 }
 
-.logo-track:hover {
-    animation-play-state: paused;
+.logo-item {
+    pointer-events: auto; /* Allows links inside if needed, but track keeps moving */
 }
 
 @keyframes scroll {
