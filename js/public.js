@@ -35,8 +35,9 @@ function initSmoothScroll() {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
+                const offset = window.innerWidth <= 768 ? 70 : 90;
                 window.scrollTo({
-                    top: target.offsetTop - 90,
+                    top: target.offsetTop - offset,
                     behavior: 'smooth'
                 });
             }
@@ -53,17 +54,19 @@ function initPortfolio() {
 
     const renderProjects = async (filter = 'all') => {
         const allProjects = await DataService.getProjects();
-        const projects = allProjects.filter(p => p.status === 'Published');
+        // Case-insensitive status check
+        const projects = allProjects.filter(p => (p.status || '').toLowerCase() === 'published');
         const filteredProjects = filter === 'all' 
             ? projects 
             : projects.filter(p => p.category === filter);
 
         portfolioGrid.innerHTML = filteredProjects.map(project => `
             <div class="project-card" data-category="${project.category}">
-                <img src="${project.featuredImage}" alt="${project.title}" class="project-img">
+                <img src="${project.featuredImage || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800'}" alt="${project.title}" class="project-img">
                 <div class="project-overlay">
                     <span class="project-cat">${project.category}</span>
                     <h3 class="project-title">${project.title}</h3>
+                    <p class="project-desc-mini">${project.description || ''}</p>
                     <p class="project-client">${project.clientName} • ${new Date(project.projectDate).getFullYear()}</p>
                 </div>
             </div>
@@ -84,6 +87,19 @@ function initPortfolio() {
 
     // Initial render
     renderProjects();
+
+    // Auto-reload (Real-time update) every 5 seconds
+    let lastDataHash = '';
+    setInterval(async () => {
+        const allProjects = await DataService.getProjects();
+        const currentHash = JSON.stringify(allProjects);
+        
+        if (currentHash !== lastDataHash) {
+            const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
+            await renderProjects(activeFilter);
+            lastDataHash = currentHash;
+        }
+    }, 5000);
 }
 
 // Contact Form Logic
@@ -128,19 +144,44 @@ function initContactForm() {
 function initMobileMenu() {
     const btn = document.querySelector('.mobile-menu-btn');
     const navLinks = document.querySelector('.nav-links');
+    const links = document.querySelectorAll('.nav-links a');
     
-    if (btn) {
+    if (btn && navLinks) {
         btn.addEventListener('click', () => {
-            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-            if (navLinks.style.display === 'flex') {
-                navLinks.style.flexDirection = 'column';
-                navLinks.style.position = 'absolute';
-                navLinks.style.top = '80px';
-                navLinks.style.left = '0';
-                navLinks.style.width = '100%';
-                navLinks.style.background = 'white';
-                navLinks.style.padding = '20px';
-                navLinks.style.boxShadow = 'var(--shadow-md)';
+            navLinks.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+            
+            // Toggle icon
+            const icon = btn.querySelector('i');
+            if (icon) {
+                icon.classList.toggle('fa-bars');
+                icon.classList.toggle('fa-times');
+            }
+        });
+
+        // Close menu when link is clicked
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                document.body.classList.remove('menu-open');
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.classList.add('fa-bars');
+                    icon.classList.remove('fa-times');
+                }
+            });
+        });
+
+        // Close menu when window is resized to desktop
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                navLinks.classList.remove('active');
+                document.body.classList.remove('menu-open');
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.classList.add('fa-bars');
+                    icon.classList.remove('fa-times');
+                }
             }
         });
     }

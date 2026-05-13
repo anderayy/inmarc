@@ -7,7 +7,7 @@ USE inmarc_db;
 CREATE TABLE IF NOT EXISTS projects (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    category ENUM('Industrial', 'Office', 'Retail') NOT NULL,
+    category ENUM('Outsourcing', 'Events', 'Procurement', 'Transport', 'Logistics', 'Technical') NOT NULL,
     description TEXT NOT NULL,
     clientName VARCHAR(255) NOT NULL,
     projectDate DATE NOT NULL,
@@ -36,8 +36,14 @@ CREATE TABLE IF NOT EXISTS admin_users (
     email VARCHAR(100)
 );
 
--- Seed Admin User (password: admin123)
--- In production, use password_hash()
+-- Seed Admin User
 INSERT INTO admin_users (username, password, name, email) 
 VALUES ('admin', 'admin123', 'Admin User', 'admin@inmarc.id')
 ON DUPLICATE KEY UPDATE username=username;
+
+-- Seed Portfolio Highlights
+INSERT INTO projects (title, category, description, clientName, projectDate, status) VALUES
+('Sales Award Program', 'Events', 'Comprehensive event management for nationwide sales recognition.', 'Microsoft', '2023-12-01', 'Published'),
+('Enterprise Technical Support', 'Technical', 'Authorized Fuji Xerox service operations and maintenance.', 'Fuji Xerox', '2024-01-15', 'Published'),
+('Nationwide Logistics Execution', 'Logistics', 'End-to-end delivery coordination for enterprise-level campaigns.', 'Intel', '2023-11-20', 'Published'),
+('Operational Manpower Outsourcing', 'Outsourcing', 'Strategic staffing and payroll management for tech headquarters.', 'HP', '2024-02-10', 'Published');

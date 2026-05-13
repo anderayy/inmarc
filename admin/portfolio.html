@@ -12,7 +12,9 @@
     <!-- Sidebar (Same as dashboard) -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <div class="sidebar-logo">InMarc <span>Indonesia</span></div>
+            <div class="sidebar-logo">
+                <img src="../assets/logos/inmarc_logo.png" alt="InMarc Indonesia" style="height: 80px; width: auto; filter: brightness(0) invert(1);">
+            </div>
         </div>
         <nav class="sidebar-nav">
             <a href="dashboard.html" class="nav-item">
@@ -72,7 +74,7 @@
                 </tbody>
             </table>
             <div class="pagination">
-                <div id="pagination-info">Showing 1 to 10 of 48 projects</div>
+                <div id="pagination-info">Loading projects...</div>
                 <div class="page-btns" id="pagination-btns">
                     <!-- Pagination buttons -->
                 </div>
@@ -112,17 +114,20 @@
                 <tr>
                     <td>
                         <div class="project-title-cell">
-                            <img src="${p.featuredImage}" class="project-thumb">
+                            ${p.featuredImage ? 
+                                `<img src="${p.featuredImage}" class="project-thumb">` : 
+                                `<div class="project-thumb-placeholder"><i class="fas fa-image"></i></div>`
+                            }
                             <div>
-                                <div style="font-weight: 600;">${p.title}</div>
-                                <div style="font-size: 12px; color: var(--text-muted);">${p.clientName}</div>
+                                <div style="font-weight: 600;">${p.title || 'Untitled Project'}</div>
+                                <div style="font-size: 12px; color: var(--text-muted);">${p.clientName || 'N/A'}</div>
                             </div>
                         </div>
                     </td>
-                    <td><span class="badge-status" style="background: rgba(37, 99, 235, 0.1); color: var(--primary-blue);">${p.category}</span></td>
-                    <td>${new Date(p.updatedAt).toLocaleDateString()}</td>
+                    <td><span class="badge-status" style="background: rgba(37, 99, 235, 0.1); color: var(--primary-blue);">${p.category || 'Uncategorized'}</span></td>
+                    <td>${p.updatedAt ? new Date(p.updatedAt).toLocaleDateString() : 'Just now'}</td>
                     <td>
-                        <span class="badge-status ${p.status.toLowerCase()}">${p.status}</span>
+                        <span class="badge-status ${(p.status || 'Draft').toLowerCase()}">${p.status || 'Draft'}</span>
                     </td>
                     <td class="actions">
                         <a href="edit-project.html?id=${p.id}" class="btn-action" title="Edit"><i class="fas fa-edit"></i></a>

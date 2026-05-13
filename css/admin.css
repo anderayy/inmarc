@@ -253,12 +253,23 @@ td {
     gap: 20px;
 }
 
-.project-thumb {
+.project-thumb, .project-thumb-placeholder {
     width: 56px;
     height: 56px;
     border-radius: 10px;
     object-fit: cover;
     box-shadow: var(--shadow-sm);
+    flex-shrink: 0;
+}
+
+.project-thumb-placeholder {
+    background: #F1F5F9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #CBD5E1;
+    font-size: 20px;
+    border: 1px dashed #CBD5E1;
 }
 
 .badge-status {

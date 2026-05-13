@@ -11,7 +11,9 @@
 <body class="admin-body">
     <aside class="sidebar">
         <div class="sidebar-header">
-            <div class="sidebar-logo">InMarc <span>Indonesia</span></div>
+            <div class="sidebar-logo">
+                <img src="../assets/logos/inmarc_logo.png" alt="InMarc Indonesia" style="height: 80px; width: auto; filter: brightness(0) invert(1);">
+            </div>
         </div>
         <nav class="sidebar-nav">
             <a href="dashboard.html" class="nav-item">
@@ -56,9 +58,12 @@
                 <div class="form-group">
                     <label>Category</label>
                     <select name="category" required>
-                        <option value="Industrial">Industrial</option>
-                        <option value="Office">Office</option>
-                        <option value="Retail">Retail</option>
+                        <option value="Outsourcing">Outsourcing</option>
+                        <option value="Events">Events</option>
+                        <option value="Procurement">Procurement</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Logistics">Logistics</option>
+                        <option value="Technical">Technical</option>
                     </select>
                 </div>
 
@@ -82,13 +87,13 @@
 
                 <div class="form-group full-width">
                     <label>Featured Image</label>
-                    <div class="upload-zone" id="upload-zone">
+                    <div class="upload-zone" id="upload-zone" style="cursor: pointer;">
                         <i class="fas fa-cloud-upload-alt"></i>
                         <p>Click or drag to upload image</p>
                         <span>Support JPG, PNG (Max 5MB)</span>
-                        <input type="file" id="file-input" accept="image/*" style="display: none;">
                         <input type="hidden" name="featuredImage" id="image-data">
                     </div>
+                    <input type="file" id="file-input" accept="image/*" style="display: none;">
                     <div id="image-preview" class="image-preview-container">
                         <span class="preview-placeholder">Preview will appear here</span>
                     </div>
@@ -113,10 +118,10 @@
 
         AuthService.checkAuth();
 
-        const user = AuthService.getUser();
-        document.getElementById('user-name').textContent = user.name;
-        document.getElementById('user-email').textContent = user.email;
-        document.getElementById('user-initials').textContent = user.name.split(' ').map(n => n[0]).join('');
+        const user = AuthService.getUser() || { name: 'Admin User', email: 'admin@inmarc.id' };
+        document.getElementById('user-name').textContent = user.name || 'Admin';
+        document.getElementById('user-email').textContent = user.email || '';
+        document.getElementById('user-initials').textContent = (user.name || 'A').split(' ').map(n => n[0]).join('');
 
         const form = document.getElementById('project-form');
         const fileInput = document.getElementById('file-input');
@@ -151,7 +156,9 @@
         loadProject();
 
         // File Upload Logic
-        uploadZone.onclick = () => fileInput.click();
+        uploadZone.addEventListener('click', () => {
+            fileInput.click();
+        });
 
         fileInput.onchange = (e) => {
             const file = e.target.files[0];

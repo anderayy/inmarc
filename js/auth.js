@@ -3,16 +3,31 @@ const API_BASE = '/api';
 
 const AuthService = {
     login: async (username, password) => {
-        const response = await fetch(`${API_BASE}/auth.php`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        });
-        const result = await response.json();
-        
-        if (result.success) {
-            sessionStorage.setItem(AUTH_KEY, JSON.stringify(result.user));
-            return true;
+        try {
+            const response = await fetch(`${API_BASE}/auth.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const result = await response.json();
+            
+            if (result.success) {
+                sessionStorage.setItem(AUTH_KEY, JSON.stringify(result.user));
+                return true;
+            }
+        } catch (error) {
+            console.warn('API not available, attempting local mock login for development...');
+            // Local Mock Login Bypass for static environments (Live Server)
+            if (username === 'admin' && password === 'admin123') {
+                const mockUser = { 
+                    username: 'admin', 
+                    name: 'Admin User',
+                    email: 'admin@inmarc.id',
+                    role: 'administrator' 
+                };
+                sessionStorage.setItem(AUTH_KEY, JSON.stringify(mockUser));
+                return true;
+            }
         }
         return false;
     },

@@ -5,10 +5,10 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Content-Type: application/json; charset=UTF-8");
 
-$host = "localhost";
-$db_name = "inmarc_db";
-$username = "root";
-$password = ""; // Change this in production
+$host = getenv('DB_HOST') ?: "localhost";
+$db_name = getenv('DB_NAME') ?: "inmarc_db";
+$username = getenv('DB_USER') ?: "root";
+$password = getenv('DB_PASS') ?: ""; 
 
 try {
     $conn = new PDO("mysql:host=" . $host . ";dbname=" . $db_name, $username, $password);
