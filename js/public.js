@@ -88,6 +88,25 @@ function initPortfolio() {
     // Initial render
     renderProjects();
 
+    // Mobile Touch Reveal for Portfolio
+    portfolioGrid.addEventListener('click', (e) => {
+        const card = e.target.closest('.project-card');
+        if (card) {
+            // If it's a mobile device (based on touch capability)
+            if (window.matchMedia("(max-width: 992px)").matches) {
+                const isActive = card.classList.contains('active-mobile');
+                
+                // Close all other cards
+                document.querySelectorAll('.project-card').forEach(c => c.classList.remove('active-mobile'));
+                
+                // Toggle current card
+                if (!isActive) {
+                    card.classList.add('active-mobile');
+                }
+            }
+        }
+    });
+
     // Auto-reload (Real-time update) every 5 seconds
     let lastDataHash = '';
     setInterval(async () => {

@@ -581,9 +581,15 @@ section {
     opacity: 0.6;
 }
 
-.project-card:hover .project-overlay {
+.project-card:hover .project-overlay,
+.project-card.active-mobile .project-overlay {
     opacity: 1;
     transform: translateY(0);
+}
+
+.project-card.active-mobile .project-img {
+    transform: scale(1.1);
+    opacity: 0.6;
 }
 
 .project-cat {
