@@ -1,6 +1,14 @@
 <?php
 require_once 'config.php';
 
+if (!isMaintenanceAllowed()) {
+    http_response_code(403);
+    echo json_encode(["success" => false, "message" => "Forbidden"]);
+    exit;
+}
+
+requireAuth();
+
 try {
     $sql = "
     CREATE TABLE IF NOT EXISTS projects (
@@ -33,10 +41,6 @@ try {
         email VARCHAR(100)
     );
 
-    INSERT INTO admin_users (username, password, name, email) 
-    VALUES ('admin', 'admin123', 'Admin User', 'admin@inmarc.id')
-    ON DUPLICATE KEY UPDATE username=username;
-
     INSERT IGNORE INTO projects (title, category, description, clientName, projectDate, status) VALUES
     ('Sales Award Program', 'Events', 'Comprehensive event management for nationwide sales recognition.', 'Microsoft', '2023-12-01', 'Published'),
     ('Enterprise Technical Support', 'Technical', 'Authorized Fuji Xerox service operations and maintenance.', 'Fuji Xerox', '2024-01-15', 'Published'),
@@ -67,7 +71,7 @@ try {
     http_response_code(500);
     echo json_encode([
         "success" => false,
-        "error" => $e->getMessage()
+        "error" => "Migration failed"
     ]);
 }
 ?>

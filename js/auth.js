@@ -7,6 +7,7 @@ const AuthService = {
             const response = await fetch(`${API_BASE}/auth.php`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
                 body: JSON.stringify({ username, password })
             });
             const result = await response.json();
@@ -18,18 +19,7 @@ const AuthService = {
             // If API returns error but response is received, throw to trigger mock
             throw new Error(result.message || 'Auth failed');
         } catch (error) {
-            console.warn('API error or not available, attempting local mock login:', error.message);
-            // Local Mock Login Bypass for static environments (Live Server)
-            if (username === 'admin' && password === 'admin123') {
-                const mockUser = { 
-                    username: 'admin', 
-                    name: 'Admin User',
-                    email: 'admin@inmarc.id',
-                    role: 'administrator' 
-                };
-                sessionStorage.setItem(AUTH_KEY, JSON.stringify(mockUser));
-                return true;
-            }
+            console.warn('API error or not available:', error.message);
         }
         return false;
     },

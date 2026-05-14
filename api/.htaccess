@@ -1,0 +1,3 @@
+<FilesMatch "^(debug-db|migrate)\.php$">
+    Require all denied
+</FilesMatch>

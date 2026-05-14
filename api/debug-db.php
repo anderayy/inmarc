@@ -1,5 +1,13 @@
 <?php
-header("Content-Type: application/json");
+require_once 'config.php';
+
+if (!isMaintenanceAllowed()) {
+    http_response_code(403);
+    echo json_encode(["success" => false, "message" => "Forbidden"]);
+    exit;
+}
+
+requireAuth();
 
 // Script ini untuk mengecek apakah Vercel sudah membaca data dari Environment Variables dengan benar
 // Tenang, password akan disensor demi keamanan.

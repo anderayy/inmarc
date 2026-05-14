@@ -1,3 +1,4 @@
+<?php
 require_once 'config.php';
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -34,7 +35,7 @@ switch($method) {
             echo json_encode(["success" => true, "message" => "Project created", "id" => $conn->lastInsertId()]);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["success" => false, "error" => $e->getMessage()]);
+            echo json_encode(["success" => false, "error" => "Failed to create project"]);
         }
         break;
 
@@ -59,7 +60,7 @@ switch($method) {
             echo json_encode(["success" => true, "message" => "Project updated"]);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["success" => false, "error" => $e->getMessage()]);
+            echo json_encode(["success" => false, "error" => "Failed to update project"]);
         }
         break;
 
@@ -74,8 +75,13 @@ switch($method) {
             echo json_encode(["success" => true, "message" => "Project deleted"]);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["success" => false, "error" => $e->getMessage()]);
+            echo json_encode(["success" => false, "error" => "Failed to delete project"]);
         }
+        break;
+
+    default:
+        http_response_code(405);
+        echo json_encode(["success" => false, "message" => "Method not allowed"]);
         break;
 }
 ?>

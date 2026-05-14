@@ -1,6 +1,12 @@
 <?php
 require_once 'config.php';
 
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+    http_response_code(405);
+    echo json_encode(["success" => false, "message" => "Method not allowed"]);
+    exit;
+}
+
 $data = getJsonInput();
 $username = $data['username'] ?? '';
 $password = $data['password'] ?? '';
@@ -15,6 +21,7 @@ $stmt->execute([$username]);
 $user = $stmt->fetch();
 
 if ($user && password_verify($password, $user['password'])) {
+    session_regenerate_id(true);
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['username'] = $user['username'];
     

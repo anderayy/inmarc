@@ -13,5 +13,7 @@ vendor/
 
 # Database
 # database.sql (Keeping it if it's a schema template, but usually good to ignore sensitive data)
-.vercel
-.env*.local
+.vercel/
+.env
+.env.local
+.env.*.local
