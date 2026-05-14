@@ -1,6 +1,3 @@
-<?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 require_once 'config.php';
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -19,6 +16,7 @@ switch($method) {
         break;
 
     case 'POST':
+        requireAuth();
         try {
             $data = getJsonInput();
             if (!$data) throw new Exception("Invalid JSON input");
@@ -41,6 +39,7 @@ switch($method) {
         break;
 
     case 'PUT':
+        requireAuth();
         try {
             $data = getJsonInput();
             $id = $_GET['id'] ?? null;
@@ -65,6 +64,7 @@ switch($method) {
         break;
 
     case 'DELETE':
+        requireAuth();
         try {
             $id = $_GET['id'] ?? null;
             if (!$id) throw new Exception("Project ID is required");

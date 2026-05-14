@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS admin_users (
 
 -- Seed Admin User
 INSERT INTO admin_users (username, password, name, email) 
-VALUES ('admin', 'admin123', 'Admin User', 'admin@inmarc.id')
+VALUES ('admin', '$2y$10$vUaTP9aONwaUp592Rj3g7uxWDy7E8cnliqhLjStLop4bOhYaA9a0m', 'Admin User', 'admin@inmarc.id')
 ON DUPLICATE KEY UPDATE username=username;
 
 -- Seed Portfolio Highlights

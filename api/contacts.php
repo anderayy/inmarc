@@ -4,6 +4,7 @@ require_once 'config.php';
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
+    requireAuth();
     $stmt = $conn->prepare("SELECT * FROM contacts ORDER BY submittedAt DESC");
     $stmt->execute();
     echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));

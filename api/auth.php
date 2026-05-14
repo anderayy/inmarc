@@ -1,21 +1,27 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 require_once 'config.php';
 
 $data = getJsonInput();
-$username = $data['username'];
-$password = $data['password'];
+$username = $data['username'] ?? '';
+$password = $data['password'] ?? '';
+
+if (!$username || !$password) {
+    echo json_encode(["success" => false, "message" => "Missing credentials"]);
+    exit;
+}
 
 $stmt = $conn->prepare("SELECT * FROM admin_users WHERE username = ?");
 $stmt->execute([$username]);
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
+$user = $stmt->fetch();
 
-// For demo: comparing plain text. In production, use password_verify()
-if ($user && $user['password'] === $password) {
+if ($user && password_verify($password, $user['password'])) {
+    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['username'] = $user['username'];
+    
     unset($user['password']); 
     echo json_encode(["success" => true, "user" => $user]);
 } else {
     echo json_encode(["success" => false, "message" => "Invalid username or password"]);
 }
 ?>
+
